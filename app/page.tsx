@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 
 const kenyaLocations: { [key: string]: string[] } = {
-  "Nairobi": ["Makadara", "Westlands", "Kasarani", "Embakasi Central", "Embakasi East", "Embakasi North", "Embakasi South", "Embakasi West", "Langata", "Dagoretti North", "Dagoretti South", "Ruaraka", "Starehe"],
+  "Nairobi": ["Westlands", "Kasarani", "Embakasi Central", "Embakasi East", "Embakasi North", "Embakasi South", "Embakasi West", "Langata", "Dagoretti North", "Dagoretti South", "Makadara", "Ruaraka", "Starehe"],
   "Kiambu": ["Thika", "Ruiru", "Kiambu Town", "Limuru", "Githunguri", "Lari", "Kikuyu", "Kabete"],
   "Machakos": ["Machakos Town", "Mwala", "Kangundo", "Matungulu", "Kathiani"],
   "Kajiado": ["Kajiado North", "Kajiado Central", "Kajiado South", "Isinya", "Loitokitok"],
@@ -52,54 +52,6 @@ const kenyaLocations: { [key: string]: string[] } = {
   "Mandera": ["Mandera Town"],
 };
 
-const travelFeeMap: { [key: string]: number } = {
-  "Nairobi": 0,
-  "Kiambu": 3500,
-  "Machakos": 4500,
-  "Kajiado": 5000,
-  "Nakuru": 8000,
-  "Narok": 9500,
-  "Nyandarua": 11000,
-  "Nyeri": 12000,
-  "Kirinyaga": 13000,
-  "Murang'a": 9000,
-  "Embu": 15000,
-  "Tharaka Nithi": 16000,
-  "Meru": 17000,
-  "Isiolo": 22000,
-  "Marsabit": 35000,
-  "Samburu": 28000,
-  "Laikipia": 18000,
-  "Baringo": 20000,
-  "Elgeyo Marakwet": 21000,
-  "Nandi": 22000,
-  "Uasin Gishu": 23000,
-  "Trans Nzoia": 25000,
-  "West Pokot": 28000,
-  "Turkana": 38000,
-  "Kakamega": 32000,
-  "Vihiga": 33000,
-  "Bungoma": 34000,
-  "Busia": 36000,
-  "Siaya": 37000,
-  "Kisumu": 38000,
-  "Homabay": 40000,
-  "Migori": 42000,
-  "Kisii": 41000,
-  "Nyamira": 43000,
-  "Kericho": 25000,
-  "Bomet": 27000,
-  "Mombasa": 45000,
-  "Kwale": 47000,
-  "Kilifi": 48000,
-  "Tana River": 50000,
-  "Lamu": 55000,
-  "Taita Taveta": 52000,
-  "Garissa": 45000,
-  "Wajir": 55000,
-  "Mandera": 65000,
-};
-
 export default function Home() {
   const [formData, setFormData] = useState({
     serviceType: "",
@@ -107,7 +59,6 @@ export default function Home() {
     eventDate: "",
     county: "",
     subcounty: "",
-    ward: "",
   });
 
   const [currentTime, setCurrentTime] = useState("");
@@ -124,7 +75,6 @@ export default function Home() {
   };
 
   const selectedSubcounties = kenyaLocations[formData.county] || [];
-  const travelFee = travelFeeMap[formData.county] || 6000;
 
   return (
     <div className="min-h-screen bg-black text-white">
@@ -132,7 +82,7 @@ export default function Home() {
       <nav className="fixed top-0 left-0 right-0 bg-black/95 backdrop-blur-md z-50 border-b border-white/10">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <Image src="/logo.jpg" alt="DK Digital Lens" width={48} height={48} className="rounded" />
+            <Image src="/dk-logo.png" alt="DK Digital Lens" width={48} height={48} className="rounded" />
             <div>
               <span className="text-3xl font-bold tracking-tighter">DK DIGITAL LENS</span>
               <p className="text-xs text-amber-300 -mt-1">capturing the moments that matter to you</p>
@@ -152,13 +102,88 @@ export default function Home() {
       </nav>
 
       {/* HERO */}
-      <section className="min-h-screen flex items-center justify-center bg-gradient-to-br from-black via-zinc-900 to-black relative">
+      <section className="min-h-screen flex items-center justify-center bg-gradient-to-br from-black via-zinc-900 to-black relative pt-20">
         <div className="max-w-5xl mx-auto text-center px-6 z-10">
-          <h1 className="text-7xl md:text-8xl font-bold tracking-tighter mb-6 text-white">DK DIGITAL LENS</h1>
+          <h1 className="text-7xl md:text-8xl font-bold tracking-tighter mb-6">DK DIGITAL LENS</h1>
           <p className="text-3xl md:text-4xl text-amber-300 mb-12">Capturing Kenya&apos;s most important moments</p>
           <a href="#booking" className="inline-block bg-emerald-500 hover:bg-emerald-400 px-12 py-6 rounded-3xl text-2xl font-semibold transition">
             Book Your Event
           </a>
+        </div>
+      </section>
+
+      {/* Popular Packages */}
+      <section className="py-20 bg-zinc-950">
+        <div className="max-w-6xl mx-auto px-6">
+          <h2 className="text-5xl font-bold text-center mb-4">Popular Packages</h2>
+          <div className="grid md:grid-cols-3 gap-8 mt-12">
+            {/* Wedding */}
+            <div className="bg-zinc-900 p-8 rounded-3xl">
+              <h3 className="text-2xl font-semibold mb-2">Weddings</h3>
+              <div className="text-5xl font-bold mb-6">KSh 45,000</div>
+              <p className="text-gray-400">Basic • 6 hours • 400 photos + video</p>
+            </div>
+
+            {/* Funeral - highlighted */}
+            <div className="bg-zinc-900 p-8 rounded-3xl border-2 border-amber-400 relative">
+              <div className="absolute -top-3 right-6 bg-amber-400 text-black text-xs font-bold px-4 py-1 rounded-full">Most Popular</div>
+              <h3 className="text-2xl font-semibold mb-2">Funerals (Multi-day)</h3>
+              <div className="text-5xl font-bold mb-6">KSh 55,000</div>
+              <p className="text-gray-400">Standard • Church + Journey + Burial</p>
+            </div>
+
+            {/* Graduation */}
+            <div className="bg-zinc-900 p-8 rounded-3xl">
+              <h3 className="text-2xl font-semibold mb-2">Graduations</h3>
+              <div className="text-5xl font-bold mb-6">KSh 28,000</div>
+              <p className="text-gray-400">Full day • Group + individual shots</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Comparison Table */}
+      <section className="py-20 bg-black">
+        <div className="max-w-6xl mx-auto px-6">
+          <h2 className="text-4xl font-bold text-center mb-12">Package Comparison</h2>
+          <div className="overflow-x-auto">
+            <table className="w-full text-left border-collapse">
+              <thead>
+                <tr className="bg-zinc-900">
+                  <th className="p-4">Feature</th>
+                  <th className="p-4 text-center">Basic</th>
+                  <th className="p-4 text-center">Standard</th>
+                  <th className="p-4 text-center">Premium</th>
+                </tr>
+              </thead>
+              <tbody className="text-sm">
+                <tr className="border-b border-zinc-800">
+                  <td className="p-4">Hours of coverage</td>
+                  <td className="p-4 text-center">6 hrs</td>
+                  <td className="p-4 text-center">10 hrs</td>
+                  <td className="p-4 text-center">Full day</td>
+                </tr>
+                <tr className="border-b border-zinc-800">
+                  <td className="p-4">Edited photos</td>
+                  <td className="p-4 text-center">400</td>
+                  <td className="p-4 text-center">800</td>
+                  <td className="p-4 text-center">1,200</td>
+                </tr>
+                <tr className="border-b border-zinc-800">
+                  <td className="p-4">Highlight video</td>
+                  <td className="p-4 text-center">10 min</td>
+                  <td className="p-4 text-center">20 min</td>
+                  <td className="p-4 text-center">30 min + teaser</td>
+                </tr>
+                <tr className="border-b border-zinc-800">
+                  <td className="p-4">Drone / Livestream</td>
+                  <td className="p-4 text-center text-gray-500">—</td>
+                  <td className="p-4 text-center text-gray-500">—</td>
+                  <td className="p-4 text-center text-emerald-400">Included</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </section>
 
@@ -170,7 +195,7 @@ export default function Home() {
             <form className="space-y-8">
               <div>
                 <label className="block text-sm mb-2">Service Type</label>
-                <select name="serviceType" onChange={handleChange} className="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-6 py-4">
+                <select name="serviceType" onChange={handleChange} className="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-6 py-4 text-white">
                   <option value="">Select Service</option>
                   <option value="wedding">Wedding</option>
                   <option value="funeral">Funeral (Multi-day)</option>
@@ -183,37 +208,36 @@ export default function Home() {
               <div className="grid grid-cols-2 gap-6">
                 <div>
                   <label className="block text-sm mb-2">Package Tier</label>
-                  <select name="packageTier" onChange={handleChange} className="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-6 py-4">
+                  <select name="packageTier" onChange={handleChange} className="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-6 py-4 text-white">
                     <option value="">Select Tier</option>
                     <option value="Basic">Basic</option>
                     <option value="Standard">Standard (Recommended)</option>
-                    <option value="Premium">Premium</option>
+                    <option value="Premium">Premium (+ Drone & Livestream)</option>
                   </select>
                 </div>
                 <div>
                   <label className="block text-sm mb-2">Event Date</label>
-                  <input type="date" name="eventDate" onChange={handleChange} className="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-6 py-4" />
+                  <input type="date" name="eventDate" onChange={handleChange} className="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-6 py-4 text-white" />
                 </div>
               </div>
 
               <div>
                 <label className="block text-sm mb-2">Location</label>
-                <div className="grid grid-cols-3 gap-4">
-                  <select name="county" onChange={handleChange} className="bg-zinc-800 border border-zinc-700 rounded-2xl px-6 py-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <select name="county" onChange={handleChange} className="bg-zinc-800 border border-zinc-700 rounded-2xl px-6 py-4 text-white">
                     <option value="">County</option>
                     {Object.keys(kenyaLocations).map(county => <option key={county} value={county}>{county}</option>)}
                   </select>
-                  <select name="subcounty" onChange={handleChange} className="bg-zinc-800 border border-zinc-700 rounded-2xl px-6 py-4">
+                  <select name="subcounty" onChange={handleChange} className="bg-zinc-800 border border-zinc-700 rounded-2xl px-6 py-4 text-white">
                     <option value="">Sub-county</option>
                     {selectedSubcounties.map(sub => <option key={sub} value={sub}>{sub}</option>)}
                   </select>
-                  <input name="ward" placeholder="Ward" onChange={handleChange} className="bg-zinc-800 border border-zinc-700 rounded-2xl px-6 py-4" />
                 </div>
               </div>
 
-              <div className="bg-zinc-800 p-4 rounded-2xl text-sm">
-                Estimated travel fee (hidden in final price): <span className="font-semibold text-emerald-400">KSh {travelFee}</span>
-              </div>
+              <p className="text-xs text-gray-400 text-center">
+                For events outside Nairobi, client provides transport &amp; accommodation
+              </p>
 
               <button
                 type="button"
@@ -227,12 +251,12 @@ export default function Home() {
       </section>
 
       {/* Scroll to top */}
-      <button onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })} className="fixed bottom-8 right-8 bg-white/10 hover:bg-white/20 p-4 rounded-full text-2xl">
+      <button onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })} className="fixed bottom-8 right-8 bg-white/10 hover:bg-white/20 p-4 rounded-full text-2xl transition">
         ↑
       </button>
 
-      {/* Custom quote */}
-      <button onClick={() => alert("Custom quote request coming soon")} className="fixed bottom-8 left-8 bg-amber-400 text-black px-6 py-3 rounded-3xl text-sm font-semibold">
+      {/* Custom quote bubble */}
+      <button onClick={() => alert("Custom quote request form coming in next update")} className="fixed bottom-8 left-8 bg-amber-400 text-black px-6 py-3 rounded-3xl text-sm font-semibold shadow-2xl hover:scale-105 transition">
         💬 Request Custom Quote
       </button>
     </div>
