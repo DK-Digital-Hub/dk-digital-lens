@@ -1,7 +1,32 @@
 // app/page.tsx
-import Link from "next/link";
+"use client";
+
+import { useState } from "react";
+
+const counties = [
+  { name: "Nairobi", subcounties: ["Westlands", "Kasarani", "Embakasi", "Starehe", "Langata"] },
+  { name: "Kiambu", subcounties: ["Thika", "Ruiru", "Kiambu Town", "Limuru"] },
+  { name: "Kajiado", subcounties: ["Kajiado North", "Kajiado Central"] },
+  { name: "Nakuru", subcounties: ["Nakuru Town", "Naivasha", "Gilgil"] },
+  // Add more counties later if needed
+];
 
 export default function Home() {
+  const [formData, setFormData] = useState({
+    serviceType: "",
+    packageTier: "",
+    eventDate: "",
+    county: "",
+    subcounty: "",
+    ward: "",
+  });
+
+  const handleChange = (e: any) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const selectedCounty = counties.find(c => c.name === formData.county);
+
   return (
     <div className="min-h-screen bg-black text-white">
       {/* Hero */}
@@ -11,14 +36,11 @@ export default function Home() {
             DK DIGITAL LENS
           </h1>
           <p className="text-3xl md:text-4xl text-gray-300 mb-10">
-            Capturing the moments that matter to you 
+            Premium Photography &amp; Videography • Kenya
           </p>
-          <Link
-            href="#booking"
-            className="inline-block bg-white text-black px-10 py-5 rounded-2xl text-xl font-semibold hover:scale-105 transition"
-          >
+          <a href="#booking" className="inline-block bg-white text-black px-10 py-5 rounded-2xl text-xl font-semibold hover:scale-105 transition">
             Book Your Event Now
-          </Link>
+          </a>
         </div>
       </section>
 
@@ -46,7 +68,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Booking Form Section */}
+      {/* Booking Form */}
       <section id="booking" className="py-20 bg-black">
         <div className="max-w-3xl mx-auto px-6">
           <h2 className="text-4xl font-bold text-center mb-12">Book Your Coverage</h2>
@@ -54,54 +76,56 @@ export default function Home() {
             <form className="space-y-8">
               <div>
                 <label className="block text-sm mb-2">Service Type</label>
-                <select className="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-6 py-4 text-white">
-                  <option>Wedding</option>
-                  <option>Funeral (Multi-day)</option>
-                  <option>Graduation / School Function</option>
-                  <option>Corporate Event</option>
-                  <option>Birthday / Baby Shower</option>
-                  <option>Sports Event</option>
+                <select name="serviceType" onChange={handleChange} className="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-6 py-4 text-white">
+                  <option value="">Select Service</option>
+                  <option value="wedding">Wedding</option>
+                  <option value="funeral">Funeral (Multi-day)</option>
+                  <option value="graduation">Graduation / School Function</option>
+                  <option value="corporate">Corporate Event</option>
+                  <option value="birthday">Birthday / Baby Shower</option>
                 </select>
               </div>
 
               <div className="grid grid-cols-2 gap-6">
                 <div>
                   <label className="block text-sm mb-2">Package Tier</label>
-                  <select className="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-6 py-4 text-white">
-                    <option>Basic</option>
-                    <option>Standard (Recommended)</option>
-                    <option>Premium</option>
+                  <select name="packageTier" onChange={handleChange} className="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-6 py-4 text-white">
+                    <option value="">Select Tier</option>
+                    <option value="Basic">Basic</option>
+                    <option value="Standard">Standard (Recommended)</option>
+                    <option value="Premium">Premium</option>
                   </select>
                 </div>
                 <div>
                   <label className="block text-sm mb-2">Event Date</label>
-                  <input type="date" className="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-6 py-4 text-white" />
+                  <input type="date" name="eventDate" onChange={handleChange} className="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-6 py-4 text-white" />
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm mb-2">Location (County → Sub-county → Ward)</label>
+                <label className="block text-sm mb-2">Location</label>
                 <div className="grid grid-cols-3 gap-4">
-                  <select className="bg-zinc-800 border border-zinc-700 rounded-2xl px-6 py-4 text-white">
-                    <option>Nairobi</option>
-                    <option>Kiambu</option>
-                    <option>Kajiado</option>
-                    {/* More counties will be added in next step */}
+                  <select name="county" onChange={handleChange} className="bg-zinc-800 border border-zinc-700 rounded-2xl px-6 py-4 text-white">
+                    <option value="">County</option>
+                    {counties.map(c => <option key={c.name} value={c.name}>{c.name}</option>)}
                   </select>
-                  <select className="bg-zinc-800 border border-zinc-700 rounded-2xl px-6 py-4 text-white">
-                    <option>Select Sub-county</option>
+                  <select name="subcounty" onChange={handleChange} className="bg-zinc-800 border border-zinc-700 rounded-2xl px-6 py-4 text-white">
+                    <option value="">Sub-county</option>
+                    {selectedCounty && selectedCounty.subcounties.map(s => <option key={s} value={s}>{s}</option>)}
                   </select>
-                  <select className="bg-zinc-800 border border-zinc-700 rounded-2xl px-6 py-4 text-white">
-                    <option>Select Ward</option>
+                  <select name="ward" onChange={handleChange} className="bg-zinc-800 border border-zinc-700 rounded-2xl px-6 py-4 text-white">
+                    <option value="">Ward</option>
+                    <option value="Any Ward">Any Ward</option>
                   </select>
                 </div>
               </div>
 
               <button
                 type="button"
+                onClick={() => alert("Booking form ready! Next step: Paystack 50% deposit integration")}
                 className="w-full bg-emerald-600 hover:bg-emerald-500 py-6 rounded-3xl text-xl font-semibold transition"
               >
-                Pay 50% Deposit with M-Pesa / Card (KSh XX,XXX)
+                Continue to 50% Deposit Payment
               </button>
             </form>
           </div>
@@ -109,7 +133,7 @@ export default function Home() {
       </section>
 
       <footer className="py-12 text-center text-gray-500 text-sm">
-        © 2026 DK Digital Lens • Nairobi, Kenya
+        © 2026 DK Digital Lens • Nairobi, Kenya • All content remains private
       </footer>
     </div>
   );
