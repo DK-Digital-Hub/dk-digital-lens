@@ -139,7 +139,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Package Comparison Table */}
+      {/* Package Comparison */}
       <section className="py-20 bg-black">
         <div className="max-w-6xl mx-auto px-6">
           <h2 className="text-4xl font-bold text-center mb-12">Package Comparison</h2>
@@ -184,15 +184,14 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Digital Marketing & Branding - Lively & Colorful */}
+      {/* Digital Marketing & Branding - Colorful & Animated */}
       <section className="py-20 bg-zinc-950">
         <div className="max-w-6xl mx-auto px-6">
           <h2 className="text-5xl font-bold text-center mb-4">Digital Marketing &amp; Branding</h2>
           <p className="text-center text-gray-400 mb-12">Grow your business with professional social media, content &amp; branding</p>
 
           <div className="grid md:grid-cols-3 gap-8">
-            {/* Starter */}
-            <div className="bg-zinc-900 p-8 rounded-3xl hover:scale-105 hover:shadow-2xl transition-all duration-300 border border-transparent hover:border-emerald-400 group">
+            <div className="bg-zinc-900 p-8 rounded-3xl hover:scale-105 hover:shadow-2xl transition-all duration-300 border border-emerald-400/30 hover:border-emerald-400 group">
               <div className="text-emerald-400 text-sm font-semibold mb-2">STARTER</div>
               <h3 className="text-2xl font-semibold mb-2">Starter Package</h3>
               <div className="text-5xl font-bold mb-6">KSh 25,000<span className="text-base font-normal text-gray-400">/month</span></div>
@@ -203,7 +202,6 @@ export default function Home() {
               </ul>
             </div>
 
-            {/* Growth */}
             <div className="bg-zinc-900 p-8 rounded-3xl hover:scale-105 hover:shadow-2xl transition-all duration-300 border-2 border-amber-400 group relative">
               <div className="absolute -top-3 right-6 bg-amber-400 text-black text-xs font-bold px-4 py-1 rounded-full">RECOMMENDED</div>
               <div className="text-amber-400 text-sm font-semibold mb-2">GROWTH</div>
@@ -217,8 +215,7 @@ export default function Home() {
               </ul>
             </div>
 
-            {/* Premium */}
-            <div className="bg-zinc-900 p-8 rounded-3xl hover:scale-105 hover:shadow-2xl transition-all duration-300 border border-transparent hover:border-purple-400 group">
+            <div className="bg-zinc-900 p-8 rounded-3xl hover:scale-105 hover:shadow-2xl transition-all duration-300 border border-purple-400/30 hover:border-purple-400 group">
               <div className="text-purple-400 text-sm font-semibold mb-2">PREMIUM</div>
               <h3 className="text-2xl font-semibold mb-2">Premium Branding</h3>
               <div className="text-5xl font-bold mb-6">KSh 85,000<span className="text-base font-normal text-gray-400">/month</span></div>
@@ -239,7 +236,6 @@ export default function Home() {
           <h2 className="text-4xl font-bold text-center mb-12">Book Your Coverage</h2>
           <div className="bg-zinc-900 rounded-3xl p-10">
             <form className="space-y-8">
-              {/* Service Type, Package Tier, Date, Location fields - same as before */}
               <div>
                 <label className="block text-sm mb-2">Service Type</label>
                 <select name="serviceType" onChange={handleChange} className="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-6 py-4 text-white">
@@ -287,25 +283,4 @@ export default function Home() {
               </p>
 
               <button
-                type="button"
-                className="w-full bg-emerald-600 hover:bg-emerald-500 py-6 rounded-3xl text-xl font-semibold transition"
-              >
-                Continue to 50% Deposit Payment
-              </button>
-            </form>
-          </div>
-        </div>
-      </section>
-
-      {/* Scroll to top */}
-      <button onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })} className="fixed bottom-8 right-8 bg-white/10 hover:bg-white/20 p-4 rounded-full text-2xl transition">
-        ↑
-      </button>
-
-      {/* Custom quote bubble */}
-      <button onClick={() => alert("Custom quote request coming soon")} className="fixed bottom-8 left-8 bg-amber-400 text-black px-6 py-3 rounded-3xl text-sm font-semibold shadow-2xl hover:scale-105 transition">
-        💬 Request Custom Quote
-      </button>
-    </div>
-  );
-}
+                type="button
