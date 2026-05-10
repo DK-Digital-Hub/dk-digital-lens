@@ -139,7 +139,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Package Comparison */}
+      {/* Package Comparison Table */}
       <section className="py-20 bg-black">
         <div className="max-w-6xl mx-auto px-6">
           <h2 className="text-4xl font-bold text-center mb-12">Package Comparison</h2>
@@ -184,7 +184,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Digital Marketing & Branding - Colorful & Animated */}
+      {/* Digital Marketing & Branding - Lively & Colorful */}
       <section className="py-20 bg-zinc-950">
         <div className="max-w-6xl mx-auto px-6">
           <h2 className="text-5xl font-bold text-center mb-4">Digital Marketing &amp; Branding</h2>
@@ -283,4 +283,25 @@ export default function Home() {
               </p>
 
               <button
-                type="button
+                type="button"
+                className="w-full bg-emerald-600 hover:bg-emerald-500 py-6 rounded-3xl text-xl font-semibold transition"
+              >
+                Continue to 50% Deposit Payment
+              </button>
+            </form>
+          </div>
+        </div>
+      </section>
+
+      {/* Scroll to top */}
+      <button onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })} className="fixed bottom-8 right-8 bg-white/10 hover:bg-white/20 p-4 rounded-full text-2xl transition">
+        ↑
+      </button>
+
+      {/* Custom quote bubble */}
+      <button onClick={() => alert("Custom quote request coming soon")} className="fixed bottom-8 left-8 bg-amber-400 text-black px-6 py-3 rounded-3xl text-sm font-semibold shadow-2xl hover:scale-105 transition">
+        💬 Request Custom Quote
+      </button>
+    </div>
+  );
+}
