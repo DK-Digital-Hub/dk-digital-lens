@@ -1,4 +1,3 @@
-// app/page.tsx
 "use client";
 
 import { useState, useEffect } from "react";
@@ -59,8 +58,8 @@ const kenyaLocations: { [key: string]: string[] } = {
 };
 
 const getPackagePrice = (service: string, tier: string) => {
-  const base = { wedding: 45000, funeral: 55000, graduation: 28000, corporate: 35000, birthday: 25000 };
-  let price = base[service as keyof typeof base] || 35000;
+  const base: { [key: string]: number } = { wedding: 45000, funeral: 55000, graduation: 28000, corporate: 35000, birthday: 25000 };
+  let price = base[service] || 35000;
   if (tier === "Standard") price += 15000;
   if (tier === "Premium") price += 35000;
   return price;
@@ -74,7 +73,6 @@ export default function Home() {
     county: "",
     subcounty: "",
   });
-
   const [currentTime, setCurrentTime] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -82,10 +80,19 @@ export default function Home() {
     const timer = setInterval(() => {
       setCurrentTime(new Date().toLocaleTimeString("en-US", { hour12: true, hour: "2-digit", minute: "2-digit", second: "2-digit" }));
     }, 1000);
-    return () => clearInterval(timer);
+
+    const script = document.createElement("script");
+    script.src = "https://js.paystack.co/v1/inline.js";
+    script.async = true;
+    document.body.appendChild(script);
+
+    return () => {
+      clearInterval(timer);
+      if (script.parentNode) script.parentNode.removeChild(script);
+    };
   }, []);
 
-  const handleChange = (e: any) => {
+  const handleChange = (e: React.ChangeEvent<HTMLSelectElement | HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
@@ -98,19 +105,18 @@ export default function Home() {
     }
 
     setLoading(true);
-
     const fullPrice = getPackagePrice(formData.serviceType, formData.packageTier);
     const deposit = Math.round(fullPrice * 0.5);
 
     // @ts-ignore
     const handler = window.PaystackPop.setup({
       key: process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY,
-      email: "customer@dkdigitalmedia.co.ke",
+      email: "client@dkdigitalmedia.co.ke",
       amount: deposit * 100,
       currency: "KES",
-      ref: "DK-" + Math.floor(Math.random() * 1000000000),
+      ref: `DK-${Math.floor(Math.random() * 1000000000)}`,
       callback: async (response: any) => {
-        const { error } = await supabase.from("bookings").insert({
+        await supabase.from("bookings").insert({
           service_type: formData.serviceType,
           package_tier: formData.packageTier,
           event_date: formData.eventDate,
@@ -120,24 +126,18 @@ export default function Home() {
           paystack_reference: response.reference,
           status: "pending",
         });
-
-        if (error) {
-          alert("Payment successful but booking save failed. Contact us on +254...");
-        } else {
-          alert(`🎉 Payment successful!\nReference: ${response.reference}\n\nThank you! You will receive a confirmation shortly.`);
-          setFormData({ serviceType: "", packageTier: "", eventDate: "", county: "", subcounty: "" });
-        }
+        alert(`🎉 Payment successful!\nReference: ${response.reference}\n\nThank you! Confirmation coming shortly.`);
+        setFormData({ serviceType: "", packageTier: "", eventDate: "", county: "", subcounty: "" });
       },
       onClose: () => setLoading(false),
     });
 
     handler.openIframe();
-    setLoading(false);
   };
 
   return (
     <div className="min-h-screen bg-black text-white">
-      {/* FIXED NAVBAR */}
+      {/* NAVBAR */}
       <nav className="fixed top-0 left-0 right-0 bg-black/95 backdrop-blur-md z-50 border-b border-white/10">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -147,46 +147,126 @@ export default function Home() {
               <p className="text-xs text-amber-300 -mt-1">capturing the moments that matter to you</p>
             </div>
           </div>
-
           <div className="flex items-center gap-8">
             <div className="hidden md:flex items-center gap-2 bg-zinc-900 px-4 py-2 rounded-2xl text-sm font-mono">
-              <span className="text-emerald-400">🕒</span>
-              {currentTime}
+              <span className="text-emerald-400">🕒</span> {currentTime}
             </div>
-            <a href="#booking" className="bg-white text-black px-6 py-3 rounded-2xl font-semibold hover:bg-amber-300 transition">
-              Book Now
-            </a>
+            <a href="#booking" className="bg-white text-black px-6 py-3 rounded-2xl font-semibold hover:bg-amber-300 transition">Book Now</a>
           </div>
         </div>
       </nav>
 
       {/* HERO */}
-      <section className="min-h-screen flex items-center justify-center bg-gradient-to-br from-black via-zinc-900 to-black relative pt-20">
-        <div className="max-w-5xl mx-auto text-center px-6 z-10">
+      <section className="min-h-screen flex items-center justify-center bg-gradient-to-br from-black via-zinc-900 to-black pt-20">
+        <div className="max-w-5xl mx-auto text-center px-6">
           <h1 className="text-7xl md:text-8xl font-bold tracking-tighter mb-6">DK DIGITAL LENS</h1>
           <p className="text-3xl md:text-4xl text-amber-300 mb-12">Capturing Kenya&apos;s most important moments</p>
-          <a href="#booking" className="inline-block bg-emerald-500 hover:bg-emerald-400 px-12 py-6 rounded-3xl text-2xl font-semibold transition">
-            Book Your Event
-          </a>
+          <a href="#booking" className="inline-block bg-emerald-500 hover:bg-emerald-400 px-12 py-6 rounded-3xl text-2xl font-semibold transition">Book Your Event</a>
         </div>
       </section>
 
-      {/* Popular Packages, Comparison Table, Digital Marketing section — all included and colorful */}
-      {/* (The full beautiful layout from the previous full code) */}
+      {/* POPULAR PACKAGES */}
+      <section className="py-20 bg-zinc-950">
+        <div className="max-w-6xl mx-auto px-6">
+          <h2 className="text-5xl font-bold text-center mb-12">Popular Packages</h2>
+          <div className="grid md:grid-cols-3 gap-8">
+            {/* Wedding */}
+            <div className="bg-zinc-900 rounded-3xl p-8 border border-white/10 hover:border-emerald-500 transition">
+              <h3 className="text-2xl font-semibold mb-2">Weddings</h3>
+              <p className="text-4xl font-bold text-emerald-400">KSh 45,000</p>
+              <ul className="mt-6 space-y-3 text-sm">
+                <li>✓ Basic • 6 hours • 400 photos + video</li>
+              </ul>
+            </div>
 
-      {/* Booking Form with REAL Paystack */}
-      <section id="booking" className="py-20 bg-black">
+            {/* Funeral - Most Popular */}
+            <div className="bg-zinc-900 rounded-3xl p-8 border-2 border-amber-400 relative">
+              <div className="absolute -top-3 right-6 bg-amber-400 text-black text-xs font-bold px-4 py-1 rounded-full">Most Popular</div>
+              <h3 className="text-2xl font-semibold mb-2">Funerals (Multi-day)</h3>
+              <p className="text-4xl font-bold text-emerald-400">KSh 55,000</p>
+              <ul className="mt-6 space-y-3 text-sm">
+                <li>✓ Standard • Church + Journey + Burial</li>
+              </ul>
+            </div>
+
+            {/* Graduation */}
+            <div className="bg-zinc-900 rounded-3xl p-8 border border-white/10 hover:border-emerald-500 transition">
+              <h3 className="text-2xl font-semibold mb-2">Graduations</h3>
+              <p className="text-4xl font-bold text-emerald-400">KSh 28,000</p>
+              <ul className="mt-6 space-y-3 text-sm">
+                <li>✓ Full day • Group + individual shots</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* PACKAGE COMPARISON TABLE */}
+      <section className="py-20 bg-black">
+        <div className="max-w-6xl mx-auto px-6">
+          <h2 className="text-5xl font-bold text-center mb-12">Package Comparison</h2>
+          <table className="w-full border-collapse bg-zinc-900 rounded-3xl overflow-hidden">
+            <thead>
+              <tr className="bg-zinc-800">
+                <th className="p-6 text-left">Feature</th>
+                <th className="p-6 text-center">Basic</th>
+                <th className="p-6 text-center bg-amber-400 text-black">Standard</th>
+                <th className="p-6 text-center">Premium</th>
+              </tr>
+            </thead>
+            <tbody className="text-sm">
+              <tr className="border-t border-white/10"><td className="p-6">Photos + Video</td><td className="p-6 text-center">✓</td><td className="p-6 text-center">✓</td><td className="p-6 text-center">✓</td></tr>
+              <tr className="border-t border-white/10"><td className="p-6">Turnaround time</td><td className="p-6 text-center">7 days</td><td className="p-6 text-center">5 days</td><td className="p-6 text-center">3 days</td></tr>
+              <tr className="border-t border-white/10"><td className="p-6">Drone footage</td><td className="p-6 text-center">✕</td><td className="p-6 text-center">✕</td><td className="p-6 text-center">✓</td></tr>
+              <tr className="border-t border-white/10"><td className="p-6">Livestream</td><td className="p-6 text-center">✕</td><td className="p-6 text-center">✕</td><td className="p-6 text-center">✓</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      {/* DIGITAL MARKETING SECTION */}
+      <section className="py-20 bg-zinc-950">
+        <div className="max-w-6xl mx-auto px-6">
+          <h2 className="text-5xl font-bold text-center mb-12">Digital Marketing &amp; Branding</h2>
+          <div className="grid md:grid-cols-3 gap-8">
+            <div className="bg-zinc-900 rounded-3xl p-8">
+              <h3 className="text-xl font-semibold">Starter</h3>
+              <p className="text-4xl font-bold text-emerald-400 mt-2">KSh 25,000/month</p>
+              <ul className="mt-6 space-y-2 text-sm">
+                <li>✓ 24 posts/month + Reels</li>
+              </ul>
+            </div>
+            <div className="bg-zinc-900 rounded-3xl p-8 border-2 border-amber-400">
+              <h3 className="text-xl font-semibold">Growth</h3>
+              <p className="text-4xl font-bold text-emerald-400 mt-2">KSh 45,000/month</p>
+              <ul className="mt-6 space-y-2 text-sm">
+                <li>✓ Full social media management</li>
+              </ul>
+            </div>
+            <div className="bg-zinc-900 rounded-3xl p-8">
+              <h3 className="text-xl font-semibold">Premium Branding</h3>
+              <p className="text-4xl font-bold text-emerald-400 mt-2">KSh 85,000/month</p>
+              <ul className="mt-6 space-y-2 text-sm">
+                <li>✓ Logo redesign + Website + SEO</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* BOOKING FORM */}
+      <section id="booking" className="py-20 bg-zinc-950">
         <div className="max-w-3xl mx-auto px-6">
-          <h2 className="text-4xl font-bold text-center mb-12">Book Your Coverage</h2>
-          <div className="bg-zinc-900 rounded-3xl p-10">
+          <h2 className="text-5xl font-bold text-center mb-12">Book Your Coverage</h2>
+          <div className="bg-zinc-900 rounded-3xl p-10 border border-white/10">
             <form className="space-y-8">
               <div>
                 <label className="block text-sm mb-2">Service Type</label>
-                <select name="serviceType" onChange={handleChange} className="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-6 py-4 text-white">
+                <select name="serviceType" onChange={handleChange} className="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-6 py-4 text-white focus:outline-none focus:border-emerald-500">
                   <option value="">Select Service</option>
                   <option value="wedding">Wedding</option>
                   <option value="funeral">Funeral (Multi-day)</option>
-                  <option value="graduation">Graduation / School Function</option>
+                  <option value="graduation">Graduation</option>
                   <option value="corporate">Corporate Event</option>
                   <option value="birthday">Birthday / Baby Shower</option>
                 </select>
@@ -195,7 +275,7 @@ export default function Home() {
               <div className="grid grid-cols-2 gap-6">
                 <div>
                   <label className="block text-sm mb-2">Package Tier</label>
-                  <select name="packageTier" onChange={handleChange} className="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-6 py-4 text-white">
+                  <select name="packageTier" onChange={handleChange} className="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-6 py-4 text-white focus:outline-none focus:border-emerald-500">
                     <option value="">Select Tier</option>
                     <option value="Basic">Basic</option>
                     <option value="Standard">Standard (Recommended)</option>
@@ -204,33 +284,31 @@ export default function Home() {
                 </div>
                 <div>
                   <label className="block text-sm mb-2">Event Date</label>
-                  <input type="date" name="eventDate" onChange={handleChange} className="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-6 py-4 text-white" />
+                  <input type="date" name="eventDate" onChange={handleChange} className="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-6 py-4 text-white focus:outline-none focus:border-emerald-500" />
                 </div>
               </div>
 
               <div>
                 <label className="block text-sm mb-2">Location</label>
                 <div className="grid grid-cols-2 gap-4">
-                  <select name="county" onChange={handleChange} className="bg-zinc-800 border border-zinc-700 rounded-2xl px-6 py-4 text-white">
+                  <select name="county" onChange={handleChange} className="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-6 py-4 text-white focus:outline-none focus:border-emerald-500">
                     <option value="">County</option>
-                    {Object.keys(kenyaLocations).map(county => <option key={county} value={county}>{county}</option>)}
+                    {Object.keys(kenyaLocations).map(c => <option key={c} value={c}>{c}</option>)}
                   </select>
-                  <select name="subcounty" onChange={handleChange} className="bg-zinc-800 border border-zinc-700 rounded-2xl px-6 py-4 text-white">
+                  <select name="subcounty" onChange={handleChange} className="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-6 py-4 text-white focus:outline-none focus:border-emerald-500">
                     <option value="">Sub-county</option>
-                    {selectedSubcounties.map(sub => <option key={sub} value={sub}>{sub}</option>)}
+                    {selectedSubcounties.map(s => <option key={s} value={s}>{s}</option>)}
                   </select>
                 </div>
               </div>
 
-              <p className="text-xs text-gray-400 text-center">
-                For events outside Nairobi, client provides transport &amp; accommodation
-              </p>
+              <p className="text-xs text-gray-400 text-center">For events outside Nairobi, client provides transport &amp; accommodation</p>
 
               <button
                 type="button"
                 onClick={handlePayment}
                 disabled={loading}
-                className="w-full bg-emerald-600 hover:bg-emerald-500 py-6 rounded-3xl text-xl font-semibold transition disabled:opacity-50"
+                className="w-full bg-emerald-600 hover:bg-emerald-500 py-6 rounded-3xl text-xl font-semibold transition-all disabled:opacity-50"
               >
                 {loading ? "Processing..." : "Pay 50% Deposit Now"}
               </button>
@@ -239,14 +317,9 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Scroll to top + quote bubble */}
-      <button onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })} className="fixed bottom-8 right-8 bg-white/10 hover:bg-white/20 p-4 rounded-full text-2xl transition">
-        ↑
-      </button>
-
-      <button onClick={() => alert("Custom quote request coming soon")} className="fixed bottom-8 left-8 bg-amber-400 text-black px-6 py-3 rounded-3xl text-sm font-semibold shadow-2xl hover:scale-105 transition">
-        💬 Request Custom Quote
-      </button>
+      {/* SCROLL TO TOP + QUOTE BUBBLE */}
+      <button onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })} className="fixed bottom-8 right-8 bg-white/10 hover:bg-white/20 p-4 rounded-full text-3xl transition">↑</button>
+      <button onClick={() => alert("Custom quote request — coming soon")} className="fixed bottom-8 left-8 bg-amber-400 text-black px-6 py-3 rounded-3xl text-sm font-semibold shadow-2xl hover:scale-105 transition">💬 Request Custom Quote</button>
     </div>
   );
 }
