@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import { createClient } from "@supabase/supabase-js";
 
+export const dynamic = "force-dynamic";   // ← THIS LINE FIXES THE PRERENDER ERROR
+
 export default function Home() {
   const [formData, setFormData] = useState({
     serviceType: "",
@@ -14,11 +16,6 @@ export default function Home() {
   });
   const [currentTime, setCurrentTime] = useState("");
   const [loading, setLoading] = useState(false);
-
-  const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-  );
 
   const kenyaLocations: { [key: string]: string[] } = {
     "Nairobi": ["Makadara", "Westlands", "Kasarani", "Langata"],
@@ -53,6 +50,11 @@ export default function Home() {
 
     setLoading(true);
     const deposit = 25000;
+
+    const supabase = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    );
 
     // @ts-ignore
     const handler = window.PaystackPop.setup({
