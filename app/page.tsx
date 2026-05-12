@@ -20,7 +20,7 @@ export default function Home() {
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
   );
 
-  const kenyaLocations = {
+  const kenyaLocations: { [key: string]: string[] } = {
     "Nairobi": ["Makadara", "Westlands", "Kasarani", "Langata"],
     "Kiambu": ["Thika", "Ruiru"],
     "Machakos": ["Machakos Town"],
@@ -41,7 +41,7 @@ export default function Home() {
     return () => clearInterval(timer);
   }, []);
 
-  const handleChange = (e) => {
+  const handleChange = (e: React.ChangeEvent<HTMLSelectElement | HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
@@ -52,7 +52,7 @@ export default function Home() {
     }
 
     setLoading(true);
-    const deposit = 25000; // Test amount - you can change later
+    const deposit = 25000;
 
     // @ts-ignore
     const handler = window.PaystackPop.setup({
@@ -61,7 +61,7 @@ export default function Home() {
       amount: deposit * 100,
       currency: "KES",
       ref: `DK-${Math.floor(Math.random() * 1000000000)}`,
-      callback: async (response) => {
+      callback: async (response: any) => {
         await supabase.from("bookings").insert({
           service_type: formData.serviceType,
           package_tier: formData.packageTier,
