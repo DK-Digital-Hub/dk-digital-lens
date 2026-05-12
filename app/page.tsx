@@ -2,9 +2,8 @@
 
 import { useState, useEffect } from "react";
 import Image from "next/image";
-import { createClient } from "@supabase/supabase-js";
 
-export const dynamic = "force-dynamic";   // ← THIS LINE FIXES THE PRERENDER ERROR
+export const dynamic = "force-dynamic";
 
 export default function Home() {
   const [formData, setFormData] = useState({
@@ -51,11 +50,6 @@ export default function Home() {
     setLoading(true);
     const deposit = 25000;
 
-    const supabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-    );
-
     // @ts-ignore
     const handler = window.PaystackPop.setup({
       key: process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY,
@@ -63,18 +57,10 @@ export default function Home() {
       amount: deposit * 100,
       currency: "KES",
       ref: `DK-${Math.floor(Math.random() * 1000000000)}`,
-      callback: async (response: any) => {
-        await supabase.from("bookings").insert({
-          service_type: formData.serviceType,
-          package_tier: formData.packageTier,
-          event_date: formData.eventDate,
-          county: formData.county,
-          subcounty: formData.subcounty,
-          deposit_paid: true,
-          paystack_reference: response.reference,
-        });
-        alert(`🎉 Payment successful! Reference: ${response.reference}`);
+      callback: (response: any) => {
+        alert(`🎉 Payment successful! Reference: ${response.reference}\n\n(We will record this manually for now)`);
         setFormData({ serviceType: "", packageTier: "", eventDate: "", county: "", subcounty: "" });
+        setLoading(false);
       },
       onClose: () => setLoading(false),
     });
